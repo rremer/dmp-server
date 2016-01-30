@@ -1,0 +1,46 @@
+{
+  "variables": {
+    "builder_key": "",
+    "builder_secret": "",
+    "s3_key": "",
+    "s3_secret": "",
+    "s3_bucket": "",
+    "dmp_version": "0.2.2.2"
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "region": "us-west-2",
+      "vpc_id": "vpc-32cf6557",
+      "instance_type": "m3.medium",
+      "ssh_username": "ubuntu",
+      "source_ami": "ami-22b9a343",
+      "ami_name": "ksp_dmp_{{isotime \"2006-01-02\"}}",
+      "ami_description": "Kerbal Space Program - Dark Multiplayer server on Ubuntu 14.04",
+      "access_key": "{{user `builder_key`}}",
+      "secret_key": "{{user `builder_secret`}}"
+    },
+    {
+      "type": "docker",
+      "image": "ubuntu:trusty",
+      "export_path": "dmp-docker.tar"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "etc",
+      "destination": "/tmp/"
+    },
+    {
+      "type": "shell",
+      "script": "setup.sh",
+      "environment_vars": [
+        "s3_key={{user `s3_key`}}",
+        "s3_secret={{user `s3_secret`}}",
+        "s3_bucket={{user `s3_bucket`}}",
+        "dmp_version={{user `dmp_version`}}"
+      ]
+    }
+  ]
+}

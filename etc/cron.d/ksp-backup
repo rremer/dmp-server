@@ -1,0 +1,1 @@
+0 * * * * ksp /bin/bash /var/lib/ksp/ksp-backup.sh | logger -t ksp
